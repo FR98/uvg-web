@@ -6,17 +6,15 @@ html, body {
 .header {
 	background: white;
 	display: flex;
+	justify-content: space-between;
 }
 
 .header-r {
 	display:flex;
-	width: 50%;
 }
 
 .header-l {
 	display: flex;
-	width: 50%;
-	justify-content: flex-end;
 }
 
 .title {
@@ -144,18 +142,16 @@ html, body {
 	padding: 3.75rem;
 	border-bottom: 1px solid #d7e1e1;
 	display: flex;
+	justify-content: space-between;
 	font-size: 3rem;
 }
 
 .p-header-r {
-	width: 50%;
 	display: flex;
 }
 
 .p-header-l {
-	width: 50%;
 	display: flex;
-	justify-content: flex-end;
 	font-size: 2.75rem;
 }
 
@@ -229,7 +225,6 @@ html, body {
 }
 
 .package-content {
-	/* padding: 3rem; */
 	display: flex;
 	flex-wrap: wrap;
 }
@@ -255,10 +250,7 @@ html, body {
 	background: white;
 	padding: 3rem;
 	display: flex;
-}
-
-.book-data {
-	width: 92.5%;
+	justify-content: space-between;
 }
 
 .book-title {
@@ -273,8 +265,7 @@ html, body {
 }
 
 .book-options {
-	justify-content: flex-end;
-	width: 7.5%;
+	width: 3rem;
 }
 
 .book-more-img {
