@@ -31,8 +31,9 @@ class Othello {
 		const titulo = document.createElement("h1");
 		titulo.innerHTML = "OTHELLO";
 		espacio_juego.appendChild(titulo);
-
 		const espacio_tablero = document.createElement("div");
+
+		this.check_options();
 
 		othello_tablero.map((fila, indexFila) => {
 			const espacio_fila = document.createElement("div");
@@ -55,14 +56,19 @@ class Othello {
 		espacio_celda.style.width = "50px";
 		espacio_celda.style.border = "1px solid black";
 		espacio_celda.onclick = () => this.colocar_pieza(fila, celda);
+		espacio_celda.style.display = "flex";
+		espacio_celda.style.justifyContent = "center";
+		espacio_celda.style.alignItems = "center";
 
 		const ficha = document.createElement("div");
 		ficha.style.height = "50px";
 		ficha.style.width = "50px";
 		ficha.style.borderRadius = "100%";
 
-		if ( valor === 0 ) {
-			console.log(valor);
+		if ( valor === "X" ) {
+			ficha.style.background = "red";
+			ficha.style.height = "10px";
+			ficha.style.width = "10px";
 		} else if ( valor === 1 ) {
 			ficha.style.background = "white";
 		} else if ( valor === -1 ) {
@@ -75,48 +81,99 @@ class Othello {
 
 	colocar_pieza(x, y) {
 		const { othello_tablero, turnOfBlack } = this.state;
+		const value = turnOfBlack ? -1 : 1;
 
-		if (othello_tablero[x][y] != 0) {
-			console.log("Sorry but nope");
+		if (othello_tablero[x][y] != "X") {
+			console.log("Sorry but no");
 		} else {
-			// this.change_value(x, y, turnOfBlack ? -1 : 1);
-			// if (this.verificar_jugada(x, y, turnOfBlack ? -1 : 1)) {
-			// 	this.change_turn();
-			// } else {
-			// 	this.change_value(x, y, 0);
-			// }
-			this.verificar_jugada(x, y, turnOfBlack ? -1 : 1);
+			this.change_value(x, y, value);
+			this.change_turn();
+			this.clean_recommendations();
 			this.render();
 		};
-
-		// verificar_tablero();
 	};
 
-	verificar_jugada(f, c, value) {
-		// DEBE ESTAR AL LADO DE UNA DEL OTRO COLOR
+	clean_recommendations() {
+		this.state.othello_tablero.map((fila, ind_fila) => {
+			fila.map((celda, ind_celda) => {
+				if (this.state.othello_tablero[ind_fila][ind_celda] === "X") {
+					this.change_value(ind_fila, ind_celda, 0);
+				};
+			});
+		});
+	};
+
+	check_options() {
+		const { othello_tablero, turnOfBlack } = this.state;
+		const value = turnOfBlack ? -1 : 1;
+		this.state.othello_tablero.map((fila, ind_fila) => {
+			fila.map((celda, ind_celda) => {
+				if (this.celda_is_next_to_opposite(ind_fila, ind_celda, value)) {
+					// check_for_horizontal_path_between({ind_fila, ind_celda, f, c});
+					if (this.state.othello_tablero[ind_fila][ind_celda] === 0) {
+						this.change_value(ind_fila, ind_celda, "X");
+					};
+				};
+			});
+		});
+	};
+
+	celda_is_next_to_opposite(x, y, value) {
 		const opuesto = value === 1 ? -1 : 1;
 		const lista_flanqueo = [];
-		lista_flanqueo.push(this.state.othello_tablero[f-1][c-1] === opuesto);
-		lista_flanqueo.push(this.state.othello_tablero[f-1][c] === opuesto);
-		lista_flanqueo.push(this.state.othello_tablero[f-1][c+1] === opuesto);
-		lista_flanqueo.push(this.state.othello_tablero[f][c-1] === opuesto);
-		lista_flanqueo.push(this.state.othello_tablero[f][c+1] === opuesto);
-		lista_flanqueo.push(this.state.othello_tablero[f+1][c-1] === opuesto);
-		lista_flanqueo.push(this.state.othello_tablero[f+1][c] === opuesto);
-		lista_flanqueo.push(this.state.othello_tablero[f+1][c+1] === opuesto);
-
-		if (lista_flanqueo.includes(true)) {
-			// TIENE QUE HABER UN DISCO DEL OTRO COLOR 
-			// ENTRE ESTA PIEZA Y OTRA DEL MISMO COLOR
-			this.state.othello_tablero[f][c] = value;
-			this.change_turn();
+		for (let i = -1; i <= 1; i++) {
+			for (let j = -1; j <= 1; j++) {
+				if (i == 0 && j == 0) {
+					continue;
+				} else {
+					if (this.state.othello_tablero[x+i] == undefined) {
+						lista_flanqueo.push(false);
+					} else {
+						lista_flanqueo.push(this.state.othello_tablero[x+i][y+j] === opuesto);
+					};
+				};
+			};
 		};
+
+		return lista_flanqueo.includes(true);
 	};
 
-	verificar_tablero(othello_tablero) {
-		//TODO
-	};
-	
+	// verificar_jugada(f, c, value) {
+	// 	// DEBE ESTAR AL LADO DE UNA DEL OTRO COLOR
+	// 	const opuesto = value === 1 ? -1 : 1;
+	// 	const lista_flanqueo = [];
+
+	// 	for (let i = -1; i <= 1; i++) {
+	// 		for (let j = -1; j <= 1; j++) {
+	// 			if (i == 0 && j == 0) {
+	// 				continue;
+	// 			} else {
+	// 				if (this.state.othello_tablero[f+i] == undefined) {
+	// 					lista_flanqueo.push(false);
+	// 				} else {
+	// 					lista_flanqueo.push(this.state.othello_tablero[f+i][c+j] === opuesto);
+	// 				};
+	// 			};
+	// 		};
+	// 	};
+
+	// 	if (lista_flanqueo.includes(true)) {
+	// 		// TIENE QUE HABER UN DISCO DEL OTRO COLOR 
+	// 		// ENTRE ESTA PIEZA Y OTRA DEL MISMO COLOR
+
+	// 		// this.state.othello_tablero.map((fila, ind_fila) => {
+	// 		// 	fila.map((celda, ind_celda) => {
+	// 		// 		if (celda === value) {
+	// 		// 			// check_for_horizontal_path_between({ind_fila, ind_celda, f, c});
+	// 		// 			continue;
+	// 		// 		}
+	// 		// 	});
+	// 		// });
+
+	// 		this.state.othello_tablero[f][c] = value;
+	// 		this.change_turn();
+	// 	};
+	// };
 };
 
 // ESTADO INICIAL
@@ -140,130 +197,3 @@ const state_initial = {
 const root = document.getElementById('root');
 const othello_game = new Othello(root, state_initial);
 othello_game.render();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const render = (lugar_html, state) => {
-// 	lugar_html.innerHTML = "";
-// 	lugar_html.appendChild(render_tablero(state));
-// 	console.log(state.turnOfBlack);
-// };
-
-// const render_tablero = (state) => {
-// 	const { othello_tablero } = state;
-// 	const espacio_juego = document.createElement("div");
-// 	const titulo = document.createElement("h1");
-// 	titulo.innerHTML = "OTHELLO";
-// 	espacio_juego.appendChild(titulo);
-
-// 	const espacio_tablero = document.createElement("div");
-
-// 	othello_tablero.map((fila, indexFila) => {
-// 		const espacio_fila = document.createElement("div");
-// 		espacio_fila.style.display = "flex";
-// 		fila.map ((celda, indexCelda) => {
-// 			espacio_fila.appendChild(render_celda(indexFila, indexCelda, state));
-// 		});
-// 		espacio_tablero.appendChild(espacio_fila);
-// 	});
-
-// 	espacio_juego.appendChild(espacio_tablero);
-// 	return espacio_juego;
-// };
-
-// const render_celda = (fila, celda, state) => {
-// 	const valor = state.othello_tablero[fila][celda];
-// 	const espacio_celda = document.createElement("div");
-// 	espacio_celda.style.background = "green";
-// 	espacio_celda.style.height = "50px";
-// 	espacio_celda.style.width = "50px";
-// 	espacio_celda.style.border = "1px solid black";
-// 	espacio_celda.onclick = () => colocar_pieza(fila, celda, state);
-
-// 	const ficha = document.createElement("div");
-// 	ficha.style.height = "50px";
-// 	ficha.style.width = "50px";
-// 	ficha.style.borderRadius = "100%";
-
-// 	if ( valor === 0 ) {
-// 		console.log(valor);
-// 	} else if ( valor === 1 ) {
-// 		ficha.style.background = "white";
-// 	} else if ( valor === -1 ) {
-// 		ficha.style.background = "black";
-// 	}
-
-// 	espacio_celda.appendChild(ficha);
-// 	return espacio_celda;
-// };
-
-// const colocar_pieza = (x, y, state) => {
-// 	const { othello_tablero, turnOfBlack } = state;
-
-// 	if (othello_tablero[x][y] != 0) {
-// 		console.log("Sorry but nope");
-// 	} else {
-// 		// ------------------------------------------
-// 		// ES BUENA PRACTICA CAMBIAR EL ESTADO ASI?
-// 		// Preguntar si cuando se pasa el estado entre 
-// 		// las funciones es el estado global?
-// 		// Y como es la mejor manera de cambiar el estado
-// 		// global? Funcion o cambio directo al estado global? 
-// 		// ------------------------------------------
-		
-// 		if (turnOfBlack) {
-// 			console.log("Black in ", x, y);
-// 			// state.othello_tablero[x][y] = -1;
-// 			// state.turnOfBlack = false;
-// 		} else {
-// 			console.log("White in ", x, y);
-// 			// state.othello_tablero[x][y] = 1;
-// 			// state.turnOfBlack = true;
-// 		}
-// 	}
-
-// 	// verificar_tablero();
-// };
-
-// const verificar_tablero = (othello_tablero) => {
-// 	//TODO
-// };
-
-// // ESTADO INICIAL
-// const turnOfBlack_global = true;
-// const othello_tablero_global = [
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, -1, 1, 0, 0, 0],
-// 	[0, 0, 0, 1, -1, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0],
-// 	[0, 0, 0, 0, 0, 0, 0, 0]
-// ];
-
-// const state_global = {
-// 	othello_tablero: othello_tablero_global,
-// 	turnOfBlack: turnOfBlack_global,
-// };
-
-// render(root, state_global);
