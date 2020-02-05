@@ -297,7 +297,7 @@ const actualizar_jugada_diagonal = (fila, pos, arr, ort, state) => {
 			} else if (arr[pos + 1] == opuesto) {
 				pos += 1;
 				cont += 1;
-				ort ? change_value(fila+cont, pos, value, state) : change_value(pos, fila+cont, value, state);
+				ort ? change_value(fila-cont, pos, value, state) : change_value(pos, fila+cont, value, state);
 			} else { break; }
 		}
 	}
@@ -310,7 +310,7 @@ const actualizar_jugada_diagonal = (fila, pos, arr, ort, state) => {
 			} else if (arr[pos - 1] == opuesto) {
 				pos -= 1;
 				cont += 1;
-				ort ? change_value(fila+cont, pos, value, state) : change_value(pos, fila+cont, value, state);
+				ort ? change_value(fila+cont, pos, value, state) : change_value(pos, fila-cont, value, state);
 			} else { break; }
 		}
 	}
