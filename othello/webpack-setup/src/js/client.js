@@ -182,10 +182,11 @@ const render = (mount, state) => {
 		}
 	};
 	
-	function check_jugada(pos, arr) {
+	function check_jugada(pos_i, arr) {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
-		const pos_init = pos;
+		const pos_init = pos_i;
+		let pos = pos_i;
 	
 		while (true) {
 			if (arr[pos + 1] == value) {
@@ -195,6 +196,8 @@ const render = (mount, state) => {
 				pos += 1;
 			} else { break; }
 		}
+
+		pos = pos_i;
 	
 		while (true) {
 			if (arr[pos - 1] == value) {
@@ -215,8 +218,13 @@ const render = (mount, state) => {
 		actualizar_jugada(y, x, tablero_traspuesta[y], false);
 		const diagonal = get_diagonal(x, y);
 		const diagonal_inversa = get_diagonal_inversa(x, y);
+		const value = state.turnOfBlack ? -1 : 1;
+		console.log(x, y);
+		console.log("diagonal");
 		actualizar_jugada_diagonal(x, y, diagonal, true);
-		actualizar_jugada_diagonal(y, x, diagonal_inversa, false);
+		console.log("diagonal inversa");
+		// actualizar_jugada_diagonal(y, x, diagonal_inversa, false);
+		actualizar_jugada_diagonal(x, y, diagonal_inversa, false);
 	};
 	
 	function check_jugada_horizontal_positivo(pos, arr) {
@@ -237,6 +245,7 @@ const render = (mount, state) => {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
 		const pos_init = pos;
+
 		while (true) {
 			if (arr[pos - 1] == value) {
 				if (pos_init == pos) { return false; }
@@ -275,12 +284,52 @@ const render = (mount, state) => {
 		}
 	};
 	
-	function actualizar_jugada_diagonal(fila, pos, arr, ort) {
+	function actualizar_jugada_diagonal(fila, pos_i, arr, ort) {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
+		let pos = pos_i;
+
+		console.log(pos, arr);
+
+		if (check_jugada_horizontal_positivo(pos, arr)) {
+			let cont = 0;
+			while (true) {
+				if (arr[pos + 1] == value) {
+					break;
+				} else if (arr[pos + 1] == opuesto) {
+					pos += 1;
+					cont += 1;
+					console.log("HOLA1");
+					console.log(ort);
+					// ort ? change_value(fila-cont, pos, value) : change_value(pos, fila+cont, value);
+					ort ? change_value(fila-cont, pos, value) : change_value(pos, fila+cont, value);
+				} else { break; }
+			}
+		}
+
+		pos = pos_i;
 	
-		console.log(arr);
-		console.log(ort)
+		if (check_jugada_horizontal_negativo(pos, arr)) {
+			let cont = 0;
+			while (true) {
+				if (arr[pos - 1] == value) {
+					break;
+				} else if (arr[pos - 1] == opuesto) {
+					pos -= 1;
+					cont += 1;
+					console.log("HOLA2");
+					console.log(ort);
+					console.log(pos, cont);
+					// ort ? change_value(fila+cont, pos, value) : change_value(pos, fila-cont, value);
+					ort ? change_value(fila+cont, pos, value) : change_value(pos, fila-cont, value);
+				} else { break; }
+			}
+		}
+	};
+
+	function actualizar_jugada_diagonal_inversa(fila, pos, arr, ort) {
+		const value = state.turnOfBlack ? -1 : 1;
+		const opuesto = state.turnOfBlack ? 1 : -1;
 	
 		if (check_jugada_horizontal_positivo(pos, arr)) {
 			let cont = 0;
@@ -290,7 +339,9 @@ const render = (mount, state) => {
 				} else if (arr[pos + 1] == opuesto) {
 					pos += 1;
 					cont += 1;
-					ort ? change_value(fila-cont, pos, value) : change_value(pos, fila+cont, value);
+					console.log("HOLA3");
+					// ort ? change_value(fila-cont, pos, value) : change_value(pos, fila+cont, value);
+					ort ? change_value(fila-cont, pos, value) : change_value(pos, fila-cont, value);
 				} else { break; }
 			}
 		}
@@ -303,12 +354,12 @@ const render = (mount, state) => {
 				} else if (arr[pos - 1] == opuesto) {
 					pos -= 1;
 					cont += 1;
-					ort ? change_value(fila+cont, pos, value) : change_value(pos, fila-cont, value);
+					console.log("HOLA4");
+					// ort ? change_value(fila+cont, pos, value) : change_value(pos, fila-cont, value);
+					ort ? change_value(fila-cont, pos, value) : change_value(pos, fila-cont, value);
 				} else { break; }
 			}
 		}
-
-		console.log(arr);
 	};
 
 };
