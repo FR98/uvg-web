@@ -1,26 +1,20 @@
 import flatten from 'lodash/flatten';
 
 const render = (mount, state) => {
-	mount.innerHTML = "";
-	mount.appendChild(render_titulo());
-	mount.appendChild(render_instruccion());
-	mount.appendChild(render_tablero());
-	// rendertablero();
-	// const rendertablero = () => console.log('hola');
 
-	function render_titulo() {
+	const render_titulo = () => {
 		const titulo = document.createElement("h1");
 		titulo.innerHTML = "OTHELLO";
 		return titulo;
 	};
 
-	function render_instruccion() {
-		const instruc = document.createElement("h2");
-		instruc.innerHTML = state.turnOfBlack ? "Turno de piezas negras" : "Turno de piezas blancas";
-		return instruc;
-	};
+	const render_text = (texto) => {
+		const text = document.createElement("h2");
+		text.innerHTML = texto;
+		mount.appendChild(text);
+	}
 
-	function render_tablero() {
+	const render_tablero = () => {
 		const espacio_tablero = document.createElement("div");
 		espacio_tablero.style.width = '425px';
 		espacio_tablero.style.display = 'flex';
@@ -41,7 +35,7 @@ const render = (mount, state) => {
 		return espacio_tablero;
 	};
 	
-	function render_celda(fila, celda) {
+	const render_celda = (fila, celda) => {
 		const valor = state.othello_tablero[fila][celda]
 		const espacio_celda = document.createElement("div");
 		espacio_celda.style.background = "green";
@@ -57,7 +51,7 @@ const render = (mount, state) => {
 		return espacio_celda;
 	};
 
-	function render_ficha(valor) {
+	const render_ficha = (valor) => {
 		const ficha = document.createElement("div");
 		ficha.style.height = "50px";
 		ficha.style.width = "50px";
@@ -75,13 +69,28 @@ const render = (mount, state) => {
 		}
 
 		return ficha;
-	}
+	};
 	
-	function colocar_pieza(x, y) {
+	const colocar_pieza = (x, y) => {
 		const value = state.turnOfBlack ? -1 : 1;
+		let hayGanador = true;
 	
 		if (state.othello_tablero[x][y] != "X") {
-			console.log("Sorry but no");
+			state.othello_tablero.map(
+				(fila, indexFila) => {
+					if (fila.includes("X")) {
+						hayGanador = false;
+					}
+				}
+			)
+
+			switch (hayGanador) {
+				case true:
+					const ganador_txt = value == 1 ? "Negras" : "Blancas";
+					render_text("GANO:" + ganador_txt);
+				default: render_text("Ahi no se puede");
+			}
+			
 		} else {
 			change_value(x, y, value);
 			clean_recommendations();
@@ -91,11 +100,11 @@ const render = (mount, state) => {
 		};
 	};
 	
-	function change_turn() { state.turnOfBlack = !state.turnOfBlack; }
+	const change_turn = () => { state.turnOfBlack = !state.turnOfBlack; }
 	
-	function change_value (x, y, value) { state.othello_tablero[x][y] = value; }
+	const change_value = (x, y, value) => { state.othello_tablero[x][y] = value; }
 	
-	function clean_recommendations() {
+	const clean_recommendations = () => {
 		state.othello_tablero.map( (fila, ind_fila) =>
 			fila.map((celda, ind_celda) => {
 				if (state.othello_tablero[ind_fila][ind_celda] === "X") {
@@ -105,7 +114,7 @@ const render = (mount, state) => {
 		);
 	};
 	
-	function check_options() {
+	const check_options = () => {
 		state.othello_tablero.map((fila, ind_fila) =>
 			fila.map((celda, ind_celda) => {
 				if (celda_is_next_to_opposite(ind_fila, ind_celda) && state.othello_tablero[ind_fila][ind_celda] === 0) {
@@ -120,7 +129,7 @@ const render = (mount, state) => {
 		);
 	};
 	
-	function celda_is_next_to_opposite (x, y) {
+	const celda_is_next_to_opposite = (x, y) => {
 		const opuesto = state.turnOfBlack ? 1 : -1;
 		const lista_flanqueo = [];
 		for (let i = -1; i <= 1; i++) {
@@ -140,42 +149,35 @@ const render = (mount, state) => {
 		return lista_flanqueo.includes(true);
 	};
 	
-	function check_horizontal(x, y) {
+	const check_horizontal = (x, y) => {
 		const value = state.turnOfBlack ? -1 : 1;
-		if (state.othello_tablero[x].includes(value)) { 
-			// console.log("Este> ", check_jugada(y, state.othello_tablero[x]));
+		if (state.othello_tablero[x].includes(value)) {
 			return (check_jugada_arr_positivo(y, state.othello_tablero[x]) || check_jugada_arr_negativo(y, state.othello_tablero[x]));
-			// return check_jugada(y, state.othello_tablero[x]);
 		}
 		return false;
 	};
 	
-	function check_vertical(x, y) {
+	const check_vertical = (x, y) => {
 		const value = state.turnOfBlack ? -1 : 1;
 		const tablero_traspuesta = crear_traspuesta(state.othello_tablero);
 		if (tablero_traspuesta[y].includes(value)) {
-			// console.log("Este> ", check_jugada(x, tablero_traspuesta[y]));
 			return (check_jugada_arr_positivo(x, tablero_traspuesta[y]) || check_jugada_arr_negativo(x, tablero_traspuesta[y]));
-			// return check_jugada(x, tablero_traspuesta[y]);
 		}
 		return false;
 	};
 	
-	function check_diagonal(x, y) {
+	const check_diagonal = (x, y) => {
 		const value = state.turnOfBlack ? -1 : 1;
 		const diagonal = get_diagonal(x, y, true);
 		const diagonal_inversa = get_diagonal(x, y, false);
 		if (diagonal.includes(value) || diagonal_inversa.includes(value)) {
-			// console.log("Este>", (check_jugada(y, diagonal) || check_jugada(y, diagonal_inversa)) == ((check_jugada_arr_positivo(y, diagonal) || check_jugada_arr_negativo(y, diagonal)) || (check_jugada_arr_positivo(y, diagonal_inversa) || check_jugada_arr_negativo(y, diagonal_inversa))));
-			// console.log((check_jugada_arr_positivo(y, diagonal) || check_jugada_arr_negativo(y, diagonal)) || (check_jugada_arr_positivo(y, diagonal_inversa) || check_jugada_arr_negativo(y, diagonal_inversa)));
-			// return check_jugada(y, diagonal) || check_jugada(y, diagonal_inversa);
 			return (check_jugada_arr_positivo(y, diagonal) || check_jugada_arr_negativo(y, diagonal))
 				|| (check_jugada_arr_positivo(y, diagonal_inversa) || check_jugada_arr_negativo(y, diagonal_inversa));
 		}
 		return false;
 	};
 	
-	function get_diagonal(x, y, no_inversa) {
+	const get_diagonal = (x, y, no_inversa) => {
 		const y_length = state.othello_tablero.length;
 		const x_length = state.othello_tablero[0].length;
 		const maxLength = Math.max(x_length, y_length);
@@ -194,7 +196,7 @@ const render = (mount, state) => {
 		}
 	};
 
-	function check_jugada_arr_positivo(pos_i, arr) {
+	const check_jugada_arr_positivo = (pos_i, arr) => {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
 		const pos_init = pos_i;
@@ -209,7 +211,7 @@ const render = (mount, state) => {
 		}
 	};
 	
-	function check_jugada_arr_negativo(pos_i, arr) {
+	const check_jugada_arr_negativo = (pos_i, arr) => {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
 		const pos_init = pos_i;
@@ -228,7 +230,7 @@ const render = (mount, state) => {
 	
 	// // -------------------------------------------------------------
 	
-	function cambiar_fichas(x, y) {
+	const cambiar_fichas = (x, y) => {
 		actualizar_jugada(x, y, state.othello_tablero[x], true);
 		const tablero_traspuesta = crear_traspuesta(state.othello_tablero);
 		actualizar_jugada(y, x, tablero_traspuesta[y], false);
@@ -243,7 +245,7 @@ const render = (mount, state) => {
 		actualizar_jugada_diagonal(x, y, diagonal_inversa, false);
 	};
 	
-	function actualizar_jugada(fila, pos, arr, ort) {
+	const actualizar_jugada = (fila, pos, arr, ort) => {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
 	
@@ -271,7 +273,7 @@ const render = (mount, state) => {
 		}
 	};
 	
-	function actualizar_jugada_diagonal(fila, pos_i, arr, ort) {
+	const actualizar_jugada_diagonal = (fila, pos_i, arr, ort) => {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
 		let pos = pos_i;
@@ -314,6 +316,10 @@ const render = (mount, state) => {
 		}
 	};
 
+	mount.innerHTML = "";
+	mount.appendChild(render_titulo());
+	render_text(state.turnOfBlack ? "Turno: Negras" : "Turno: Blancas")
+	mount.appendChild(render_tablero());
 };
 
 // OTRAS FUNCIONES
