@@ -1,31 +1,44 @@
+import flatten from 'lodash/flatten';
+
 const render = (mount, state) => {
 	mount.innerHTML = "";
+	mount.appendChild(render_titulo());
+	mount.appendChild(render_instruccion());
 	mount.appendChild(render_tablero());
 	// rendertablero();
 	// const rendertablero = () => console.log('hola');
 
-	function render_tablero() {
-		const espacio_juego = document.createElement("div");
+	function render_titulo() {
 		const titulo = document.createElement("h1");
 		titulo.innerHTML = "OTHELLO";
-		espacio_juego.appendChild(titulo);
+		return titulo;
+	};
+
+	function render_instruccion() {
+		const instruc = document.createElement("h2");
+		instruc.innerHTML = state.turnOfBlack ? "Turno de piezas negras" : "Turno de piezas blancas";
+		return instruc;
+	};
+
+	function render_tablero() {
 		const espacio_tablero = document.createElement("div");
+		espacio_tablero.style.width = '425px';
+		espacio_tablero.style.display = 'flex';
+		espacio_tablero.style.flexWrap = 'wrap';
 	
 		check_options();
+
+		flatten(state.othello_tablero.map(
+			(fila, indexFila) => 
+				fila.map (
+					(celda, indexCelda) => render_celda(indexFila, indexCelda)
+				)
+			)
+		).forEach(
+			celdaDiv => espacio_tablero.appendChild(celdaDiv)
+		);
 	
-		state.othello_tablero.map((fila, indexFila) => {
-			const espacio_fila = document.createElement("div");
-			espacio_fila.style.display = "flex";
-			fila.map ( (celda, indexCelda) => {
-				espacio_fila.appendChild(
-					render_celda(indexFila, indexCelda)
-				) 
-			});
-			espacio_tablero.appendChild(espacio_fila);
-		});
-	
-		espacio_juego.appendChild(espacio_tablero);
-		return espacio_juego;
+		return espacio_tablero;
 	};
 	
 	function render_celda(fila, celda) {
@@ -35,29 +48,34 @@ const render = (mount, state) => {
 		espacio_celda.style.height = "50px";
 		espacio_celda.style.width = "50px";
 		espacio_celda.style.border = "1px solid black";
+		espacio_celda.style.borderRadius = "10%";
 		espacio_celda.onclick = () => colocar_pieza(fila, celda);
 		espacio_celda.style.display = "flex";
 		espacio_celda.style.justifyContent = "center";
 		espacio_celda.style.alignItems = "center";
-	
+		espacio_celda.appendChild(render_ficha(valor));
+		return espacio_celda;
+	};
+
+	function render_ficha(valor) {
 		const ficha = document.createElement("div");
 		ficha.style.height = "50px";
 		ficha.style.width = "50px";
 		ficha.style.borderRadius = "100%";
-	
-		if ( valor === "X" ) {
-			ficha.style.background = "red";
-			ficha.style.height = "10px";
-			ficha.style.width = "10px";
-		} else if ( valor === 1 ) {
-			ficha.style.background = "white";
-		} else if ( valor === -1 ) {
-			ficha.style.background = "black";
+
+		switch(valor) {
+			case 1: ficha.style.background = "white"; break;
+			case -1: ficha.style.background = "black"; break;
+			case "X":
+				ficha.style.background = "red";
+				ficha.style.height = "10px";
+				ficha.style.width = "10px";
+				break;
+			default: break;
 		}
-	
-		espacio_celda.appendChild(ficha);
-		return espacio_celda;
-	};
+
+		return ficha;
+	}
 	
 	function colocar_pieza(x, y) {
 		const value = state.turnOfBlack ? -1 : 1;
@@ -78,29 +96,28 @@ const render = (mount, state) => {
 	function change_value (x, y, value) { state.othello_tablero[x][y] = value; }
 	
 	function clean_recommendations() {
-		state.othello_tablero.map((fila, ind_fila) => {
+		state.othello_tablero.map( (fila, ind_fila) =>
 			fila.map((celda, ind_celda) => {
 				if (state.othello_tablero[ind_fila][ind_celda] === "X") {
 					change_value(ind_fila, ind_celda, 0);
 				};
-			});
-		});
+			})
+		);
 	};
 	
 	function check_options() {
-		state.othello_tablero.map((fila, ind_fila) => {
+		state.othello_tablero.map((fila, ind_fila) =>
 			fila.map((celda, ind_celda) => {
 				if (celda_is_next_to_opposite(ind_fila, ind_celda) && state.othello_tablero[ind_fila][ind_celda] === 0) {
 					if (check_horizontal(ind_fila, ind_celda)
 							|| check_vertical(ind_fila, ind_celda)
 							|| check_diagonal(ind_fila, ind_celda)
-							// || check_diagonal_inversa(ind_fila, ind_celda)
 						) {
 						change_value(ind_fila, ind_celda, "X");
 					};
 				};
-			});
-		});
+			})
+		);
 	};
 	
 	function celda_is_next_to_opposite (x, y) {
@@ -125,28 +142,40 @@ const render = (mount, state) => {
 	
 	function check_horizontal(x, y) {
 		const value = state.turnOfBlack ? -1 : 1;
-		if (state.othello_tablero[x].includes(value)) { return check_jugada(y, state.othello_tablero[x]); }
+		if (state.othello_tablero[x].includes(value)) { 
+			// console.log("Este> ", check_jugada(y, state.othello_tablero[x]));
+			return (check_jugada_arr_positivo(y, state.othello_tablero[x]) || check_jugada_arr_negativo(y, state.othello_tablero[x]));
+			// return check_jugada(y, state.othello_tablero[x]);
+		}
 		return false;
 	};
 	
 	function check_vertical(x, y) {
 		const value = state.turnOfBlack ? -1 : 1;
 		const tablero_traspuesta = crear_traspuesta(state.othello_tablero);
-		if (tablero_traspuesta[y].includes(value)) { return check_jugada(x, tablero_traspuesta[y]); }
+		if (tablero_traspuesta[y].includes(value)) {
+			// console.log("Este> ", check_jugada(x, tablero_traspuesta[y]));
+			return (check_jugada_arr_positivo(x, tablero_traspuesta[y]) || check_jugada_arr_negativo(x, tablero_traspuesta[y]));
+			// return check_jugada(x, tablero_traspuesta[y]);
+		}
 		return false;
 	};
 	
 	function check_diagonal(x, y) {
 		const value = state.turnOfBlack ? -1 : 1;
-		const diagonal = get_diagonal(x, y);
-		const diagonal_inversa = get_diagonal_inversa(x, y);
+		const diagonal = get_diagonal(x, y, true);
+		const diagonal_inversa = get_diagonal(x, y, false);
 		if (diagonal.includes(value) || diagonal_inversa.includes(value)) {
-			return check_jugada(y, diagonal) || check_jugada(y, diagonal_inversa);
+			// console.log("Este>", (check_jugada(y, diagonal) || check_jugada(y, diagonal_inversa)) == ((check_jugada_arr_positivo(y, diagonal) || check_jugada_arr_negativo(y, diagonal)) || (check_jugada_arr_positivo(y, diagonal_inversa) || check_jugada_arr_negativo(y, diagonal_inversa))));
+			// console.log((check_jugada_arr_positivo(y, diagonal) || check_jugada_arr_negativo(y, diagonal)) || (check_jugada_arr_positivo(y, diagonal_inversa) || check_jugada_arr_negativo(y, diagonal_inversa)));
+			// return check_jugada(y, diagonal) || check_jugada(y, diagonal_inversa);
+			return (check_jugada_arr_positivo(y, diagonal) || check_jugada_arr_negativo(y, diagonal))
+				|| (check_jugada_arr_positivo(y, diagonal_inversa) || check_jugada_arr_negativo(y, diagonal_inversa));
 		}
 		return false;
 	};
 	
-	function get_diagonal(x, y) {
+	function get_diagonal(x, y, no_inversa) {
 		const y_length = state.othello_tablero.length;
 		const x_length = state.othello_tablero[0].length;
 		const maxLength = Math.max(x_length, y_length);
@@ -155,50 +184,37 @@ const render = (mount, state) => {
 		for (let k = 0; k <= 2 * (maxLength - 1); ++k) {
 			temp = [];
 			for (let y = y_length - 1; y >= 0; --y) {
-				let x = k - y;
+				let x = no_inversa ? k - y : k - (y_length - y);
 				if (x >= 0 && x < x_length) { temp.push(state.othello_tablero[y][x]); }
 			}
-	
-			if (x + y == cont) { return temp; }
+
+			const cond = no_inversa ? x + y : state.othello_tablero.length - x + y;	
+			if (cond == cont) { return no_inversa ? temp : temp.reverse(); }
 			cont += 1;
 		}
 	};
-	
-	function get_diagonal_inversa(x, y) {
-		const y_length = state.othello_tablero.length;
-		const x_length = state.othello_tablero[0].length;
-		const maxLength = Math.max(x_length, y_length);
-		let temp;
-		let cont = 0;
-		for (let k = 0; k <= 2 * (maxLength - 1); ++k) {
-			temp = [];
-			for (let y = y_length - 1; y >= 0; --y) {
-				let x = k - (y_length - y);
-				if (x >= 0 && x < x_length) { temp.push(state.othello_tablero[y][x]); }
-			}
-	
-			if (state.othello_tablero.length - x + y == cont) { return temp.reverse(); }
-			cont += 1;
-		}
-	};
-	
-	function check_jugada(pos_i, arr) {
+
+	function check_jugada_arr_positivo(pos_i, arr) {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
 		const pos_init = pos_i;
 		let pos = pos_i;
-	
 		while (true) {
 			if (arr[pos + 1] == value) {
 				if (pos_init == pos) { return false; }
 				return true;
 			} else if (arr[pos + 1] == opuesto) {
 				pos += 1;
-			} else { break; }
+			} else { return false; }
 		}
-
-		pos = pos_i;
+	};
 	
+	function check_jugada_arr_negativo(pos_i, arr) {
+		const value = state.turnOfBlack ? -1 : 1;
+		const opuesto = state.turnOfBlack ? 1 : -1;
+		const pos_init = pos_i;
+		let pos = pos_i;
+
 		while (true) {
 			if (arr[pos - 1] == value) {
 				if (pos_init == pos) { return false; }
@@ -216,8 +232,8 @@ const render = (mount, state) => {
 		actualizar_jugada(x, y, state.othello_tablero[x], true);
 		const tablero_traspuesta = crear_traspuesta(state.othello_tablero);
 		actualizar_jugada(y, x, tablero_traspuesta[y], false);
-		const diagonal = get_diagonal(x, y);
-		const diagonal_inversa = get_diagonal_inversa(x, y);
+		const diagonal = get_diagonal(x, y, true);
+		const diagonal_inversa = get_diagonal(x, y, false);
 		const value = state.turnOfBlack ? -1 : 1;
 		console.log(x, y);
 		console.log("diagonal");
@@ -227,41 +243,12 @@ const render = (mount, state) => {
 		actualizar_jugada_diagonal(x, y, diagonal_inversa, false);
 	};
 	
-	function check_jugada_horizontal_positivo(pos, arr) {
-		const value = state.turnOfBlack ? -1 : 1;
-		const opuesto = state.turnOfBlack ? 1 : -1;
-		const pos_init = pos;
-		while (true) {
-			if (arr[pos + 1] == value) {
-				if (pos_init == pos) { return false; }
-				return true;
-			} else if (arr[pos + 1] == opuesto) {
-				pos += 1;
-			} else { return false; }
-		}
-	};
-	
-	function check_jugada_horizontal_negativo(pos, arr) {
-		const value = state.turnOfBlack ? -1 : 1;
-		const opuesto = state.turnOfBlack ? 1 : -1;
-		const pos_init = pos;
-
-		while (true) {
-			if (arr[pos - 1] == value) {
-				if (pos_init == pos) { return false; }
-				return true;
-			} else if (arr[pos - 1] == opuesto) {
-				pos -= 1;
-			} else { return false; }
-		}
-	};
-	
 	function actualizar_jugada(fila, pos, arr, ort) {
 		const value = state.turnOfBlack ? -1 : 1;
 		const opuesto = state.turnOfBlack ? 1 : -1;
 	
 	
-		if (check_jugada_horizontal_positivo(pos, arr)) {
+		if (check_jugada_arr_positivo(pos, arr)) {
 			while (true) {
 				if (arr[pos + 1] == value) {
 					break;
@@ -272,7 +259,7 @@ const render = (mount, state) => {
 			}
 		}
 	
-		if (check_jugada_horizontal_negativo(pos, arr)) {
+		if (check_jugada_arr_negativo(pos, arr)) {
 			while (true) {
 				if (arr[pos - 1] == value) {
 					break;
@@ -291,7 +278,7 @@ const render = (mount, state) => {
 
 		console.log(pos, arr);
 
-		if (check_jugada_horizontal_positivo(pos, arr)) {
+		if (check_jugada_arr_positivo(pos, arr)) {
 			let cont = 0;
 			while (true) {
 				if (arr[pos + 1] == value) {
@@ -309,7 +296,7 @@ const render = (mount, state) => {
 
 		pos = pos_i;
 	
-		if (check_jugada_horizontal_negativo(pos, arr)) {
+		if (check_jugada_arr_negativo(pos, arr)) {
 			let cont = 0;
 			while (true) {
 				if (arr[pos - 1] == value) {
@@ -322,41 +309,6 @@ const render = (mount, state) => {
 					console.log(pos, cont);
 					// ort ? change_value(fila+cont, pos, value) : change_value(pos, fila-cont, value);
 					ort ? change_value(fila+cont, pos, value) : change_value(pos, fila-cont, value);
-				} else { break; }
-			}
-		}
-	};
-
-	function actualizar_jugada_diagonal_inversa(fila, pos, arr, ort) {
-		const value = state.turnOfBlack ? -1 : 1;
-		const opuesto = state.turnOfBlack ? 1 : -1;
-	
-		if (check_jugada_horizontal_positivo(pos, arr)) {
-			let cont = 0;
-			while (true) {
-				if (arr[pos + 1] == value) {
-					break;
-				} else if (arr[pos + 1] == opuesto) {
-					pos += 1;
-					cont += 1;
-					console.log("HOLA3");
-					// ort ? change_value(fila-cont, pos, value) : change_value(pos, fila+cont, value);
-					ort ? change_value(fila-cont, pos, value) : change_value(pos, fila-cont, value);
-				} else { break; }
-			}
-		}
-	
-		if (check_jugada_horizontal_negativo(pos, arr)) {
-			let cont = 0;
-			while (true) {
-				if (arr[pos - 1] == value) {
-					break;
-				} else if (arr[pos - 1] == opuesto) {
-					pos -= 1;
-					cont += 1;
-					console.log("HOLA4");
-					// ort ? change_value(fila+cont, pos, value) : change_value(pos, fila-cont, value);
-					ort ? change_value(fila-cont, pos, value) : change_value(pos, fila-cont, value);
 				} else { break; }
 			}
 		}
