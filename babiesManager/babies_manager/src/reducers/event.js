@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import * as types from '../types/event';
 
+// Reducers
+
 const order = (state = [], action) => {
     switch (action.type) {
         case types.EVENT_ADDED: {
@@ -36,3 +38,11 @@ const event = combineReducers({
 });
 
 export default event;
+
+// Selectors
+
+export const getEvent = (state, id) => state.byId[id];
+
+export const getEvents = state => state.order.map(
+    id => getEvent(state, id),
+).filter(event => event != null);
