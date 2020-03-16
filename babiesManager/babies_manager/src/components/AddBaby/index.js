@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 import { Link } from 'react-router-dom';
 
-// import './styles.css';
+import './styles.css';
 import * as actions from '../../actions/baby';
 
 const AddBaby = ({ onClick }) => {

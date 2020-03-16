@@ -3,16 +3,23 @@ import { connect } from 'react-redux';
 
 import './styles.css';
 import * as selectors from '../../reducers';
-import * as actions from '../../actions/baby';
+// import * as actions from '../../actions/baby';
 
-const Baby = ({name}) => (
+// import Events from '../Events';
+
+const Baby = ({ baby }) => {
+  console.log(baby);
+  return (
     <div className='baby'>
-        {name}
+      <h3>
+        {baby.first_name + ' ' + baby.last_name}
+      </h3>
     </div>
-);
+  );
+};
 
 export default connect(
-    (state, { id }) => ({
-        name: selectors.getBaby(state, id)
-    })
+  (state, { id }) => ({
+    baby: selectors.getBaby(state, id)
+  })
 )(Baby);
