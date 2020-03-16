@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import * as selectors from '../../reducers';
-import range from 'lodash/range';
 
-const SelectBaby = ({ cantidad, selectBaby }) => {
+const SelectBaby = ({ state, cantidad, selectBaby }) => {
+  const babies = selectors.getBabies(state);
   return (
     <div className='selectBaby'>
       <h2>Choose a baby:</h2>
@@ -14,9 +14,9 @@ const SelectBaby = ({ cantidad, selectBaby }) => {
         ) : (
           <select onChange = {e => selectBaby(e.target.value)}>
             {
-              range(cantidad).map(
-                id => (
-                  <option value={id}>{selectors.getBaby(id)}</option>
+              babies.map( 
+                baby => (
+                  <option value={baby.id} key={baby.id}>{baby.first_name}</option>
                 )
               )
             }
@@ -29,11 +29,12 @@ const SelectBaby = ({ cantidad, selectBaby }) => {
 
 export default connect(
   state => ({
+    state: state,
     cantidad: selectors.getBabies(state).length,
   }),
   dispatch => ({
     selectBaby(selectedBaby) {
-      console.log(selectedBaby)
+      console.log("Selected: ",selectedBaby)
     }
   })
 )(SelectBaby);

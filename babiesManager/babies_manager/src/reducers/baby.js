@@ -45,8 +45,6 @@ export default baby;
 
 export const getBaby = (state, id) => state.byId[id];
 
-// export const getBabyName = (state, id) => state.byId[id];
-
 export const getBabies = state => state.order.map(
     id => getBaby(state, id),
 ).filter(baby => baby != null);
