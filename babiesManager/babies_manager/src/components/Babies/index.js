@@ -4,11 +4,10 @@ import { Link } from 'react-router-dom';
 
 import './styles.css';
 import * as selectors from '../../reducers';
-// import * as actions from '../../actions/baby';
 
 import Baby from '../Baby';
 import SelectBaby from '../SelectBaby';
-import AddEvent from '../AddEvent';
+import Events from '../Events';
 
 const Babies = ({ babyId }) => (
   <div className='babies'>
@@ -21,7 +20,7 @@ const Babies = ({ babyId }) => (
       ) : (
         <>
         <Baby id={babyId}/>
-        <AddEvent />
+        <Events />
         </>
       )
     }
@@ -30,7 +29,7 @@ const Babies = ({ babyId }) => (
 
 export default connect(
   state => ({
-    babies: selectors.getBabies(state),
+    // babies: selectors.getBabies(state),
     babyId: selectors.getSelectedBaby(state),
   }),
 )(Babies);

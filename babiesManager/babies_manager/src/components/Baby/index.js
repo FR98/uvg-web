@@ -7,19 +7,21 @@ import * as selectors from '../../reducers';
 
 // import Events from '../Events';
 
-const Baby = ({ baby }) => {
+const Baby = ({ baby, state }) => {
   console.log(baby);
+  console.log(state);
   return (
     <div className='baby'>
-      <h3>
+      <h2>
         {baby.first_name + ' ' + baby.last_name}
-      </h3>
+      </h2>
     </div>
   );
 };
 
 export default connect(
   (state, { id }) => ({
-    baby: selectors.getBaby(state, id)
+    baby: selectors.getBaby(state, id),
+    state: state,
   })
 )(Baby);

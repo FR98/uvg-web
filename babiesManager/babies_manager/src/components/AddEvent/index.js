@@ -10,7 +10,7 @@ const AddEvent = ({ onClick }) => {
   const [comment, changeComment] = useState('');
   return (
     <div className='addEvent'>
-      <h1>New Event</h1>
+      <h2>New Event</h2>
 
       <select onChange = {e => changeName(e.target.value)}>
         {
@@ -45,7 +45,7 @@ export default connect(
   undefined,
   dispatch => ({
     onClick(id, name, comment) {
-      dispatch(actions.addEvent(id, name, comment));
+      dispatch(actions.addEvent(id, name, comment, new Date().toLocaleString() ));
     }
   })
 )(AddEvent);
