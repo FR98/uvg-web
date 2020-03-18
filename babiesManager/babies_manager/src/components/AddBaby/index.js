@@ -10,24 +10,31 @@ const AddBaby = ({ onClick }) => {
   const [fName, changeFName] = useState('');
   const [lName, changeLName] = useState('');
   return (
-    <div className='addBaby'>
-      <h1>Add a new Baby</h1>
-      <input
-        type="text"
-        placeholder="First Name"
-        value={fName}
-        onChange={e => changeFName(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Last Name"
-        value={lName}
-        onChange={e => changeLName(e.target.value)}
-      />
-      <Link 
-        to='/' 
-        onClick = {() => onClick(uuid(), fName, lName)}
-      >Add</Link>
+    <div className = 'addBaby_sec'>
+      <div className = "addBaby">
+        <h1>NEW BABY</h1>
+        <input
+          type = "text"
+          placeholder = "First Name"
+          value = {fName}
+          onChange = {e => changeFName(e.target.value)}
+          className = 'fNameInput'
+        />
+        <input
+          type = "text"
+          placeholder = "Last Name"
+          value = {lName}
+          onChange = {e => changeLName(e.target.value)}
+          className = 'lNameInput'
+        />
+        <Link 
+          to='/' 
+          onClick = {() => onClick(uuid(), fName, lName)}
+          className = 'addBtn_link'
+        >
+          <button className = 'addBtn'>ADD</button>
+        </Link>
+      </div>
     </div>
   );
 };

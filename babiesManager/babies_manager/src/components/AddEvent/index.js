@@ -9,10 +9,10 @@ const AddEvent = ({ onClick }) => {
   const [name, changeName] = useState('');
   const [comment, changeComment] = useState('');
   return (
-    <div className='addEvent'>
-      <h2>New Event</h2>
+    <div className = 'addEvent'>
+      <h2>NEW EVENT</h2>
 
-      <select onChange = {e => changeName(e.target.value)}>
+      <select onChange = {e => changeName(e.target.value)} className = 'selectEventType'>
         {
           [
             'Siesta',
@@ -22,21 +22,22 @@ const AddEvent = ({ onClick }) => {
             'Pecho'
           ].map(
             (eventType, index) => (
-              <option value={eventType} key={index}>{eventType}</option>
+              <option value = {eventType} key = {index}>{eventType}</option>
             )
           )
         }
       </select>
-
-      <input
-        type="text"
-        placeholder="Comment"
-        value={comment}
-        onChange={e => changeComment(e.target.value)}
-      />
+      <textarea
+        type = "text"
+        placeholder = "Comment"
+        value = {comment}
+        onChange = {e => changeComment(e.target.value)}
+        className = 'commentInput'
+      ></textarea>
       <button
         onClick =  {() => onClick(uuid(), name, comment)}
-      >Add</button>
+        className = 'addEventBtn'
+      >+</button>
     </div>
   );
 };

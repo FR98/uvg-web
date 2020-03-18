@@ -6,10 +6,9 @@ import * as selectors from '../../reducers';
 
 const Event = ({ event }) => {
   return (
-    <div className='event'>
-      <h4>
-        {event.name + '\n' + event.comment + '\n' + event.date_time}
-      </h4>
+    <div className = 'event'>
+      <h4>{event.name + " --- " + event.date_time}</h4>
+      <p>{event.comment}</p>
     </div>
   );
 };

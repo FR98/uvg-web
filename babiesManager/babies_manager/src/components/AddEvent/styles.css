@@ -1,0 +1,36 @@
+.addEvent {
+  background-color: royalblue;
+  flex: auto;
+  padding: 1.5rem 2.5rem;
+  margin: 1rem;
+  border: black solid 1.5px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 2rem;
+}
+
+.selectEventType {
+  background-color: royalblue;
+  border: black 2px dashed;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 1.5rem;
+  text-align: center;
+  margin: 0.5rem 0rem;
+  color: black;
+}
+
+.commentInput {
+  height: 150px;
+  margin: 0.5rem 0rem;
+  font-size: 1rem;
+}
+
+.addEventBtn {
+  background-color: red;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 1.5rem;
+  margin: 0.5rem 0rem;
+  color: black;
+}

@@ -1,0 +1,10 @@
+.select {
+  background-color: aqua;
+  border: black 3px dashed;
+  font-size: 5rem;
+  font-weight: bold;
+  font-style: italic;
+  width: auto;
+  border-radius: 2.5rem;
+  text-align: center;
+}

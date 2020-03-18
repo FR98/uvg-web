@@ -1,0 +1,9 @@
+.baby {
+  background-color: red;
+  flex: auto;
+  padding: 1.5rem 2.5rem;
+  margin: 1rem;
+  border: black solid 1.5px;
+  border-radius: 2rem;
+  flex-grow: 5;
+}

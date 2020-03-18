@@ -12,8 +12,8 @@ const App = () => (
   <Provider store = {store}>
     <Router>
       <Switch>
-        <Route path='/add' component={AddBaby} />
-        <Route path='/' component={Babies} />
+        <Route path = '/add' component = {AddBaby} />
+        <Route path = '/' component = {Babies} />
       </Switch>
     </Router>
   </Provider>

@@ -7,21 +7,32 @@ import * as selectors from '../../reducers';
 
 import Baby from '../Baby';
 import SelectBaby from '../SelectBaby';
-import Events from '../Events';
+import AddEvent from '../AddEvent';
 
 const Babies = ({ babyId }) => (
-  <div className='babies'>
+  <div className = 'babies'>
     <h1>The Babies Manager</h1>
-    <SelectBaby />
-    <Link to="/add">Add</Link>
+    <div className = 'baby_info_sec'>
+      <div className = 'title'>
+        <h2>Baby:</h2>
+      </div>
+      <div className = 'selectBaby_sec'>
+        <SelectBaby />
+      </div>
+      <div className='addBtn_sec'>
+        <Link to = "/add">
+          <button className = 'addBtn'>NEW</button>
+        </Link>
+      </div>
+    </div>
     {
       babyId === null ? (
         <></>
       ) : (
-        <>
-        <Baby id={babyId}/>
-        <Events />
-        </>
+        <div className = 'baby_sec'>
+          <Baby id = {babyId}/>
+          <AddEvent />
+        </div>
       )
     }
   </div>
