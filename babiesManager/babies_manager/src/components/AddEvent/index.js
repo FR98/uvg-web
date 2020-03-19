@@ -4,8 +4,10 @@ import { v4 as uuid } from 'uuid';
 
 import './styles.css';
 import * as actions from '../../actions/event';
+import * as selectors from '../../reducers';
 
-const AddEvent = ({ onClick }) => {
+const AddEvent = ({ state, onClick }) => {
+  const babyId = selectors.getSelectedBaby(state);
   const [name, changeName] = useState('');
   const [comment, changeComment] = useState('');
   return (
@@ -35,7 +37,7 @@ const AddEvent = ({ onClick }) => {
         className = 'commentInput'
       ></textarea>
       <button
-        onClick =  {() => onClick(uuid(), name, comment)}
+        onClick =  {() => onClick(uuid(), name, comment, babyId)}
         className = 'addEventBtn'
       >+</button>
     </div>
@@ -43,10 +45,12 @@ const AddEvent = ({ onClick }) => {
 };
 
 export default connect(
-  undefined,
+  state => ({
+    state: state,
+  }),
   dispatch => ({
-    onClick(id, name, comment) {
-      dispatch(actions.addEvent(id, name, comment, new Date().toLocaleString() ));
+    onClick(id, name, comment, babyId) {
+      dispatch(actions.addEvent(id, name, comment, new Date().toLocaleString(), babyId ));
     }
   })
 )(AddEvent);

@@ -24,6 +24,6 @@ const Events = ({ babyId, events }) => (
 export default connect(
   state => ({
     babyId: selectors.getSelectedBaby(state),
-    events: selectors.getEvents(state),
+    events: selectors.getEvents(state, selectors.getSelectedBaby(state)),
   }),
 )(Events);

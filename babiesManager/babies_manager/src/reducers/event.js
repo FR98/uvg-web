@@ -43,6 +43,6 @@ export default event;
 
 export const getEvent = (state, id) => state.byId[id];
 
-export const getEvents = state => state.order.map(
+export const getEvents = (state, babyId) => state.order.map(
     id => getEvent(state, id),
-).filter(event => event != null);
+).filter(event => event != null && event.baby_id === babyId);
