@@ -16,6 +16,11 @@ const AddEvent = ({ state, onClick }) => {
 
       <select onChange = {e => changeName(e.target.value)} className = 'selectEventType'>
         {
+          name === '' ? (
+            <option value = {null} key = {null}>Select a Event</option> 
+          ) : (<></>)
+        }
+        {
           [
             'Siesta',
             'Pacha',

@@ -5,13 +5,18 @@ import './styles.css';
 import * as selectors from '../../reducers';
 import * as actions from '../../actions/baby';
 
-const SelectBaby = ({ babies, selectBaby }) => (
+const SelectBaby = ({ babies, selectedBaby, selectBaby }) => (
   <div className='selectBaby'>
     {
       babies.length === 0 ? (
         <h3>There is no baby</h3>
       ) : (
         <select onChange = {e => selectBaby(e.target.value)} className = 'select'>
+          {
+            selectedBaby === null ? (
+              <option value = {null} key = {null}>Select a Baby</option> 
+            ) : (<></>)
+          }
           {
             babies.map( 
               baby => (
@@ -28,6 +33,7 @@ const SelectBaby = ({ babies, selectBaby }) => (
 export default connect(
   state => ({
     babies: selectors.getBabies(state),
+    selectedBaby: selectors.getSelectedBaby(state),
   }),
   dispatch => ({
     selectBaby(selectedBabyId) {

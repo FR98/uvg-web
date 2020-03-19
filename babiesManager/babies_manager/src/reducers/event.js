@@ -12,17 +12,11 @@ const order = (state = [], action) => {
             return [...state, action.payload.id];
         }
         case types.EVENT_DELETED: {
-            console.log(state);
-            console.log(action.payload);
-            console.log(action.payload.event);
-            console.log(remove(state, action.payload));
-            console.log(remove(state, [action.payload]));
-            console.log(remove(state, action.payload.event));
-            console.log(remove(state, [action.payload.event]));
-            console.log(remove(state, action.payload.event.id));
-            console.log(remove(state, [action.payload.event.id]));
-            console.log(state);
+            // console.log(remove(state, action.payload));
+            // console.log(remove(state, action.payload.event));
+            // console.log(remove(state, action.payload.event.id));
             return remove(state, action.payload.event.id);
+            // return [...state].filter(event => event.id !== action.payload.event.id);
         }
         default: return state;
     }
