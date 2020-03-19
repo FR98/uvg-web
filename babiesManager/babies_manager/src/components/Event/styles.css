@@ -6,6 +6,7 @@
   border: black solid 1px;
   border-radius: 1.5rem;
   margin: 0.5rem;
+  justify-content: space-between;
 }
 
 .event_info {
@@ -19,4 +20,13 @@ h4 {
 
 p {
   margin: 0rem;
+}
+
+.deleteEventBtn {
+  background-color: red;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 1.5rem;
+  margin: 0.5rem 0rem;
+  color: black;
 }

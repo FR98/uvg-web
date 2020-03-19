@@ -14,8 +14,9 @@ const Event = ({ event, onClick }) => {
       </div>
       <button
         onClick = {() => onClick(event)}
+        className = 'deleteEventBtn'
       >
-        x
+        X
       </button>
     </div>
   );
