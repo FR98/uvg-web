@@ -8,7 +8,6 @@ import * as selectors from '../../reducers';
 import Events from '../Events';
 
 const Baby = ({ baby, state }) => {
-  console.log(baby);
   console.log(state);
   return (
     <div className = 'baby'>
