@@ -23,23 +23,26 @@ from rest_framework import routers
 #     refresh_jwt_token
 # )
 
-# from pets.views import PetViewSet
+from parents.views import ParentViewSet
+from babies.views import BabyViewSet
+from events.views import EventViewSet
 
 
-# router = routers.DefaultRouter()
+router = routers.DefaultRouter()
+router.register(r'parents', ParentViewSet)
+router.register(r'babies', BabyViewSet)
+router.register(r'events', EventViewSet)
 
-# router.register(r'pets', PetViewSet)
-# # router.register(r'owner', OwnerViewSet)
-
-# # elapp.com/pets
-# # elapp.com/api/v1/pets
+# elapp.com/babies
+# elapp.com/api/v1/babies
+# elapp.com/parents
+# elapp.com/api/v1/parents
 
 urlpatterns = [
     url('admin/', admin.site.urls),
     # url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls')),
-    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-    # url(r'^api/v1/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/v1/', include(router.urls)),
     # url(r'^api/v1/token-auth/', obtain_jwt_token),
     # url(r'^api/v1/token-refresh/', refresh_jwt_token),
 ]
