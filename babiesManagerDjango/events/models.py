@@ -1,7 +1,7 @@
 from django.db import models
-from enum import Enum
+from enumchoicefield import ChoiceEnum, EnumChoiceField
 
-class EventType(Enum):
+class EventType(ChoiceEnum):
     siesta  = 'Siesta'
     pacha   = 'Pacha'
     pipi    = 'Pipi'
@@ -13,9 +13,10 @@ class EventType(Enum):
 #   your_event = Event(event_type = EventType.siesta, comment = "A comment here", baby = Baby)
 #   your_event.save()
 class Event(models.Model):
-    event_type = models.CharField(
-        max_length = 25,
-        choices = [ (tag, tag.value) for tag in EventType ]
+    event_type = EnumChoiceField(
+        enum_class = EventType,
+        # default = EventType.siesta,
+        # editable = False
     )
     comment = models.CharField(
         max_length = 250
