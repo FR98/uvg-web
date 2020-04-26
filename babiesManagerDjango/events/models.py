@@ -19,7 +19,8 @@ class Event(models.Model):
         # editable = False
     )
     comment = models.CharField(
-        max_length = 250
+        max_length = 250,
+        null = True
     )
     created_on = models.DateTimeField(
         auto_now_add = True
