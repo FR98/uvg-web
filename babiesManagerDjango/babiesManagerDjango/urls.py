@@ -20,7 +20,8 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from rest_framework_jwt.views import (
     obtain_jwt_token,
-    # refresh_jwt_token
+    refresh_jwt_token,
+    verify_jwt_token
 )
 
 from parents.views import ParentViewSet
@@ -46,5 +47,6 @@ urlpatterns = [
     # url(r'^', include(router.urls)),
     url(r'^api/v1/', include(router.urls)),
     url(r'^api/v1/token-auth/', obtain_jwt_token),
-    # url(r'^api/v1/token-refresh/', refresh_jwt_token),
+    url(r'^api/v1/token-refresh/', refresh_jwt_token),
+    url(r'^api/v1/token-verify/', verify_jwt_token),
 ]

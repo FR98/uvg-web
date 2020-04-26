@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-# import datetime
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -147,10 +147,10 @@ REST_FRAMEWORK = {
     ),
 }
 
-# JWT_AUTH = {
-#     'JWT_ALLOW_REFRESH': True,
-#     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
-# }
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
+}
 
 # AUTHENTICATION_BACKENDS = (
 #     'django.contrib.auth.backends.ModelBackend',
