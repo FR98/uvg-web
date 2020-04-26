@@ -18,10 +18,10 @@ from django.urls import path
 
 from django.conf.urls import url, include
 from rest_framework import routers
-# from rest_framework_jwt.views import (
-#     obtain_jwt_token,
-#     refresh_jwt_token
-# )
+from rest_framework_jwt.views import (
+    obtain_jwt_token,
+    # refresh_jwt_token
+)
 
 from parents.views import ParentViewSet
 from babies.views import BabyViewSet
@@ -37,12 +37,14 @@ router.register(r'events', EventViewSet)
 # elapp.com/api/v1/babies
 # elapp.com/parents
 # elapp.com/api/v1/parents
+# elapp.com/events
+# elapp.com/api/v1/events
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-    # url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # url(r'^', include(router.urls)),
     url(r'^api/v1/', include(router.urls)),
-    # url(r'^api/v1/token-auth/', obtain_jwt_token),
+    url(r'^api/v1/token-auth/', obtain_jwt_token),
     # url(r'^api/v1/token-refresh/', refresh_jwt_token),
 ]
