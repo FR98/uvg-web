@@ -40,11 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    # 'guardian',
+    'guardian',
     # 'corsheaders',
 
-    # 'permissions.apps.PermissionsConfig'
-
+    'permissions.apps.PermissionsConfig',
     'parents.apps.ParentsConfig',
     'babies.apps.BabiesConfig',
     'events.apps.EventsConfig',
@@ -152,9 +151,9 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
 }
 
-# AUTHENTICATION_BACKENDS = (
-#     'django.contrib.auth.backends.ModelBackend',
-#     'guardian.backends.ObjectPermissionBackend'
-# )
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend'
+)
 
 # CORS_ORIGIN_ALLOW_ALL = True
