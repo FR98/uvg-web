@@ -1,20 +1,17 @@
 from django.db import models
-from enumchoicefield import ChoiceEnum, EnumChoiceField
+from django.utils.translation import gettext_lazy as _
 
-class EventType(ChoiceEnum):
-    siesta  = 'Siesta'
-    pacha   = 'Pacha'
-    pipi    = 'Pipi'
-    popo    = 'Popo'
-    pecho   = 'Pecho'
-
-
-# Create an Event like this:
-#   your_event = Event(event_type = EventType.siesta, comment = "A comment here", baby = Baby)
-#   your_event.save()
 class Event(models.Model):
-    event_type = EnumChoiceField(
-        enum_class = EventType,
+    class EventType(models.TextChoices):
+        siesta  = 'Siesta', _('Siesta')
+        pacha   = 'Pacha', _('Pacha')
+        pipi    = 'Pipi', _('Pipi')
+        popo    = 'Popo', _('Popo')
+        pecho   = 'Pecho', _('Pecho')
+
+    event_type = models.CharField(
+        choices = EventType.choices,
+        max_length = 50,
         # default = EventType.siesta,
         # editable = False
     )

@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from enumchoicefield import ChoiceEnum, EnumChoiceField
-from events.models import Event, EventType
-# from babies.models import Baby
+from events.models import Event
+from babies.models import Baby
+from babies.serializers import BabySerializer
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,5 +14,3 @@ class EventSerializer(serializers.ModelSerializer):
             'created_on',
             'baby'
         )
-    
-    event_type = EnumChoiceField(enum_class = EventType)
