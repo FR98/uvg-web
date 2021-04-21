@@ -23,7 +23,7 @@
     "react-dom": "^15.3.0",
     "redux": "^3.5.2",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "^3.1.11"
   },
   "devDependencies": {},
   "scripts": {
